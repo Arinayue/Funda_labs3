@@ -1,0 +1,36 @@
+Все команды выполнять из папки task3.
+
+Сборка:
+gcc main.c func.c min_heap.c -o task03.exe
+
+1. Файл с повторяющимися символами
+Set-Content -NoNewline -Encoding ascii sample.txt 'aaaaabbc'
+.\task03.exe sample.txt
+
+Проверь частоты a:5, b:2, c:1, размер исходного файла 8 байт,
+кодированные данные 11 бит / 2 байта и экономию 75.00%.
+Коды символов могут отличаться при равных частотах.
+
+2. Один уникальный символ
+Set-Content -NoNewline -Encoding ascii one_symbol.txt 'aaaa'
+.\task03.exe one_symbol.txt
+
+Ожидается частота 4, длина кода 1 бит, 4 бита / 1 байт,
+экономия 75.00%.
+
+3. Пустой файл
+'' | Set-Content -NoNewline -Encoding ascii empty.txt
+.\task03.exe empty.txt
+
+Ожидается пустая таблица символов, 0 байт, 0 бит и экономия 0.00%.
+
+4. Ошибка: входной файл не найден
+.\task03.exe nofile.txt
+Ожидается сообщение об ошибке открытия файла и ненулевой код.
+
+5. Ошибка: не передан путь к файлу
+.\task03.exe
+Ожидается подсказка формата <путь_к_файлу>.
+
+Удалить созданные файлы:
+Remove-Item sample.txt, one_symbol.txt, empty.txt

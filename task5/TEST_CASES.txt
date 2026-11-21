@@ -1,0 +1,62 @@
+Все команды выполнять из папки task5.
+
+Сборка:
+gcc main.c io.c students.c -o task05.exe
+
+Создать входной файл:
+@'
+1 Ivan Ivanov group1 5 5 5 5 5
+2 Petr Petrov group2 3 3 3 3 3
+'@ | Set-Content -Encoding ascii students.txt
+
+1. Отчёт выше среднего, сортировка и поиск
+Перед тестом удалить старый отчёт, так как программа дописывает в него:
+Remove-Item report.txt -ErrorAction SilentlyContinue
+
+Вставить блок:
+@'
+4
+2
+1
+1
+1
+1
+0
+'@ | .\task05.exe students.txt report.txt
+
+Ожидается:
+- команда 4 записывает в report.txt Ivanov Ivan (его средний балл выше общего);
+- команда 2 с полем ID выводит студентов в порядке 1, затем 2;
+- поиск по ID 1 находит Ivan Ivanov.
+
+2. Поиск отсутствующего ID
+@'
+1
+1
+999
+0
+'@ | .\task05.exe students.txt report.txt
+Ожидается: "Совпадений нет".
+
+3. Ошибка: некорректная строка во входном файле
+@'
+1 Ivan Ivanov group1 5 5 5 5 5
+2 Petr Petrov group2 3 3
+'@ | Set-Content -Encoding ascii bad_students.txt
+.\task05.exe bad_students.txt bad_report.txt
+Ожидается ошибка формата с номером строки 2.
+
+4. Ошибка: входной файл и отчёт совпадают
+.\task05.exe students.txt students.txt
+Ожидается сообщение, что входной файл и файл отчёта должны различаться.
+
+5. Пустой список студентов
+'' | Set-Content -NoNewline -Encoding ascii empty_students.txt
+@'
+4
+0
+'@ | .\task05.exe empty_students.txt empty_report.txt
+Ожидается сообщение, что общее среднее недоступно для пустого списка.
+
+Удалить созданные файлы:
+Remove-Item students.txt, report.txt, bad_students.txt, bad_report.txt, empty_students.txt, empty_report.txt -ErrorAction SilentlyContinue

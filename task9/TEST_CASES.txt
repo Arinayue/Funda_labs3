@@ -1,0 +1,68 @@
+Все команды выполнять из папки task9.
+
+Сборка:
+gcc main.c input.c menu.c snapshot.c tree.c -o task09.exe
+
+Создать words.txt:
+Set-Content -NoNewline -Encoding ascii words.txt 'cat cat dog bird'
+
+1. Частоты, top, кратчайшее/длиннейшее слово и глубина дерева
+@'
+1
+cat
+2
+2
+3
+4
+0
+'@ | .\task09.exe words.txt ' '
+
+Ожидается:
+- начальная таблица: bird: 1, cat: 2, dog: 1;
+- поиск cat: "Frequency: 2";
+- top 2: cat: 2 и bird: 1;
+- кратчайшее слово cat, длиннейшее bird;
+- глубина дерева 2.
+
+2. Ошибка: слово не найдено
+@'
+1
+missing
+0
+'@ | .\task09.exe words.txt ' '
+Ожидается: "Word not found".
+
+3. Ошибка: нулевой размер top
+@'
+2
+0
+0
+'@ | .\task09.exe words.txt ' '
+Ожидается: "Invalid input".
+
+4. Сохранение и повторная загрузка снимка
+@'
+5
+snapshot.bin
+0
+'@ | .\task09.exe words.txt ' '
+
+@'
+6
+snapshot.bin
+1
+cat
+0
+'@ | .\task09.exe words.txt ' '
+Ожидается "Loaded" и "Frequency: 2".
+
+5. Ошибка: неверный формат аргументов
+.\task09.exe words.txt
+Ожидается подсказка "Usage: task9 FILE SEPARATOR [SEPARATOR ...]".
+
+6. Ошибка: входной файл не найден
+.\task09.exe nofile.txt ' '
+Ожидается сообщение "Reading source file failed".
+
+Удалить созданные файлы:
+Remove-Item words.txt, snapshot.bin

@@ -1,0 +1,148 @@
+Все команды выполнять из папки task8.
+
+Сборка:
+gcc -std=c99 -Wall -Wextra main.c script.c polynomial_parser.c polynomial.c -o task08.exe
+
+1. Все операции, аккумулятор и комментарии
+Создать sample_script.txt:
+@'
+% Accumulator initially equals 0
+Add(2x^2-x+2,-x^2+3x-1);
+[multiline
+comment]
+Div(x^5,x^2-1);
+Mult(x^2+3x-1,2x+x^3);
+Add(4x-8);
+Eval(1);
+Diff(2x^3-5x+7);
+Sub(x^2+1);
+Mod(x^5+1,x^2-1);
+Cmps(x^2+1,x+1);
+'@ | Set-Content -Encoding ascii sample_script.txt
+
+Запустить:
+.\task08.exe sample_script.txt
+
+Ожидаемый вывод:
+x^2+2x+1
+x^3+x
+x^5+3x^4+x^3+6x^2-2x
+x^5+3x^4+x^3+6x^2+2x-8
+5
+6x^2-5
+5x^2-6
+x+1
+x^2+2x+2
+
+2. Проверка аккумулятора и форм Eval/Diff
+Создать accumulator.txt:
+@'
+Add(x^2+2x+1);
+Add(2x-3);
+Eval(2);
+Diff();
+Eval(3);
+Diff(x^3-3x);
+Eval(x^2+1,3);
+Eval(2);
+'@ | Set-Content -Encoding ascii accumulator.txt
+
+Запустить:
+.\task08.exe accumulator.txt
+
+Ожидаемый вывод:
+x^2+2x+1
+x^2+4x-2
+10
+2x+4
+10
+3x^2-3
+10
+9
+
+3. Пустой файл
+'' | Set-Content -NoNewline -Encoding ascii empty.txt
+.\task08.exe empty.txt
+Ожидается: код завершения 0, вывода нет.
+
+Файл только с комментариями
+Создать comments.txt:
+@'
+% line comment
+[block
+comment]
+'@ | Set-Content -Encoding ascii comments.txt
+
+Запустить:
+.\task08.exe comments.txt
+
+Ожидается: код завершения 0, вывода нет.
+
+4. Ошибка синтаксиса: пропущена точка с запятой
+@'
+Add(x)
+'@ | Set-Content -Encoding ascii bad_syntax.txt
+.\task08.exe bad_syntax.txt
+Ожидается: "Invalid script syntax", ненулевой код завершения.
+
+5. Ошибка синтаксиса: неверная степень многочлена
+@'
+Add(x^,1);
+'@ | Set-Content -Encoding ascii bad_polynomial.txt
+.\task08.exe bad_polynomial.txt
+Ожидается: "Invalid script syntax", ненулевой код завершения.
+
+6. Ошибка синтаксиса: неизвестная команда
+@'
+Power(x,2);
+'@ | Set-Content -Encoding ascii unknown_command.txt
+.\task08.exe unknown_command.txt
+Ожидается: "Invalid script syntax", ненулевой код завершения.
+
+7. Ошибка синтаксиса: незакрытый блочный комментарий
+@'
+Add(x);
+[comment is not closed
+'@ | Set-Content -Encoding ascii unclosed_comment.txt
+.\task08.exe unclosed_comment.txt
+Ожидается: "Invalid script syntax", ненулевой код завершения.
+
+8. Ошибка аргументов: передано больше двух аргументов
+@'
+Add(x,1,2);
+'@ | Set-Content -Encoding ascii bad_arguments.txt
+.\task08.exe bad_arguments.txt
+Ожидается: "Invalid script syntax", ненулевой код завершения.
+
+9. Ошибка: аргумент Eval не является целым числом
+@'
+Eval(x,abc);
+'@ | Set-Content -Encoding ascii bad_eval.txt
+.\task08.exe bad_eval.txt
+Ожидается: "Invalid script syntax", ненулевой код завершения.
+
+10. Деление на нулевой многочлен
+@'
+Div(x,0);
+'@ | Set-Content -Encoding ascii division_by_zero.txt
+.\task08.exe division_by_zero.txt
+Ожидается: "Division by zero polynomial", ненулевой код завершения.
+
+11. Переполнение при вычислении многочлена
+@'
+Eval(x^1000,2);
+'@ | Set-Content -Encoding ascii overflow.txt
+.\task08.exe overflow.txt
+Ожидается: "Arithmetic overflow", ненулевой код завершения.
+
+12. Файл скрипта не найден
+.\task08.exe nofile.txt
+Ожидается: "Cannot open script file", ненулевой код завершения.
+
+13. Неверное количество аргументов программы
+.\task08.exe
+Ожидается подсказка формата:
+Usage: .\task08.exe <script_file>
+
+После проверок удалить созданные входные файлы:
+Remove-Item sample_script.txt, accumulator.txt, empty.txt, comments.txt, bad_syntax.txt, bad_polynomial.txt, unknown_command.txt, unclosed_comment.txt, bad_arguments.txt, bad_eval.txt, division_by_zero.txt, overflow.txt

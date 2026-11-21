@@ -1,0 +1,47 @@
+Все команды выполнять из папки task10.
+
+Сборка:
+gcc main.c func.c tree.c -o task10.exe
+
+Создать input.txt:
+@'
+root(left,right)
+root(a,b(c,d),e)
+root(a,,b)
+'@ | Set-Content -Encoding ascii input.txt
+
+1. Обычная обработка
+.\task10.exe input.txt output.txt
+Проверить output.txt:
+- для первых двух строк построены деревья Expression #1 и Expression #2;
+- для третьей строки выведено "Expression #3: syntax error".
+
+2. Пустая строка сохраняет номер выражения
+@'
+root(a)
+
+root(b)
+'@ | Set-Content -Encoding ascii blank_lines.txt
+.\task10.exe blank_lines.txt blank_output.txt
+
+Ожидается, что в blank_output.txt есть Expression #1 и Expression #3,
+а пустая вторая строка пропущена.
+
+3. Ошибка: входной файл не найден
+.\task10.exe nofile.txt output.txt
+Ожидается "Error: Cannot open file".
+
+4. Ошибка: входной и выходной файлы совпадают
+.\task10.exe input.txt input.txt
+Ожидается ошибка о совпадении путей.
+
+5. Ошибка: не удалось открыть выходной файл
+.\task10.exe input.txt missing_folder\output.txt
+Ожидается "Error: Cannot open file".
+
+6. Ошибка: не переданы оба пути
+.\task10.exe
+Ожидается подсказка формата <input_file> <output_file>.
+
+После тестирования удалить созданные файлы:
+Remove-Item input.txt, output.txt, blank_lines.txt, blank_output.txt

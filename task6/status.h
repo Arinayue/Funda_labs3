@@ -1,0 +1,19 @@
+#ifndef TASK6_STATUS_H
+#define TASK6_STATUS_H
+
+typedef enum {
+    ST_OK,
+    ST_INVALID_ARGUMENT,
+    ST_INVALID_FORMAT,
+    ST_INVALID_ROUTE,
+    ST_RANGE_ERROR,
+    ST_NO_MEMORY,
+    ST_FILE_OPEN,
+    ST_FILE_READ,
+    ST_FILE_CLOSE,
+    ST_OUTPUT_ERROR,
+    ST_NOT_FOUND,
+    ST_END_OF_INPUT
+} Status;
+
+#endif
